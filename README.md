@@ -14,3 +14,13 @@ You will the generate a JSON file with the following naming convention:
 $SCRIPT_NAME.$TIMESTAMP.json
 # ie. For the `spells.sh` it will be `spells.$TIMESTAMP.json` file
 ```
+
+# License 
+The code is available unde the [MIT](LICENSE) License.
+
+<a href="https://gitmoji.dev">
+  <img
+    src="https://img.shields.io/badge/gitmoji-%20😜%20😍-FFDD67.svg?style=flat-square"
+    alt="Gitmoji"
+  />
+</a>
