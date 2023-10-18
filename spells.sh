@@ -2,7 +2,7 @@
 
 # File
 TIMESTAMP="$(date '+%H:%M:%S-%d_%m_%Y')"
-FILENAME="sorts.${TIMESTAMP}.json"
+FILENAME="spells.${TIMESTAMP}.json"
 
 # Aidedd Endpoint
 ENDPOINT="https://www.aidedd.org/dnd-filters/sorts.php"
