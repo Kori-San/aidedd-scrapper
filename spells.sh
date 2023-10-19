@@ -101,31 +101,16 @@ for SPELL_URL in "${URL_ARRAY[@]}"; do
     filePrintf "\"components\":{"
 
     # Get Component V proprety 
-    filePrintf "\"v\":"
-    if echo "${COMPONENTS}" | grep -qi "V"; then
-        filePrintf "true"
-    else
-        filePrintf "false"
-    fi   
-    filePrintf ","
+    if echo "${COMPONENTS}" | grep -qi "V"; then V_COMP="true"; else V_COMP="false"; fi
+    filePrintf "\"v\":${V_COMP},"
 
     # Get Component S proprety 
-    filePrintf "\"s\":"
-    if echo "${COMPONENTS}" | grep -qi "S"; then
-        filePrintf "true"
-    else
-        filePrintf "false"
-    fi   
-    filePrintf ","
-
-    # Get Component M proprety
-    filePrintf "\"m\":"
-    if echo "${COMPONENTS}" | grep -qi "M"; then
-        filePrintf "true"
-    else
-        filePrintf "false"
-    fi   
-    filePrintf ","
+    if echo "${COMPONENTS}" | grep -qi "S"; then S_COMP="true"; else S_COMP="false"; fi
+    filePrintf "\"s\":${S_COMP},"
+    
+    # Get Component M proprety 
+    if echo "${COMPONENTS}" | grep -qi "M"; then M_COMP="true"; else M_COMP="false"; fi
+    filePrintf "\"m\":${M_COMP},"
 
     # Get Component Other proprety
     if echo "${COMPONENTS}" | grep -qi "("; then 
