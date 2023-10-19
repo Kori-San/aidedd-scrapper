@@ -13,8 +13,18 @@ function filePrintf() {
     printf "${@}" >> "${FILENAME}"
 }
 
+### Progress function 
 CLOCK=("🕛" "🕐" "🕑" "🕒" "🕓" "🕔" "🕕" "🕖" "🕗" "🕘" "🕙" "🕚")
 CLOCK_LENGHT="${#CLOCK[@]}"
+INDEX="1"
+
+function progress() {
+    CLOCK_INDEX="$((INDEX%CLOCK_LENGHT))"
+    CLOCK_EMOJI="${CLOCK[${CLOCK_INDEX}]}"
+    PERCENTAGE="$((INDEX*100/${1}))"
+    
+    printf "\r%s %s%% - Progress: %s/%s" "${CLOCK_EMOJI}" "${PERCENTAGE}" "$((INDEX++))" "${1}"
+}
 
 ######################
 ## Script Beginning ##
@@ -37,17 +47,14 @@ URL_TABLE=$(echo "${INITIAL_TABLE}" | \
 
 # Create array from URLs
 readarray -td$'\n' URL_ARRAY <<< "${URL_TABLE}"
-declare -p URL_ARRAY > /dev/null
+declare -p URL_ARRAY > /dev/null && LENGHT="${#URL_ARRAY[@]}"
 
 # Begin JSON list
 filePrintf "["
 
-INDEX="1"
-LENGHT="${#URL_ARRAY[@]}"
-
 # Loop on Spells
 for SPELL_URL in "${URL_ARRAY[@]}"; do
-    printf "%s - %s%% Progress: %s/%s" "${CLOCK[$((INDEX%CLOCK_LENGHT))]}" "$((INDEX*100/LENGHT))" "$((INDEX++))" "${LENGHT}"
+    progress "${LENGHT}"
 
     # Create object on JSON
     filePrintf "{"
@@ -156,8 +163,7 @@ for SPELL_URL in "${URL_ARRAY[@]}"; do
         break
     fi
     
-    # Reset print line and add ','
-    printf "\r"
+    # Add ',' in JSON
     filePrintf ","
 done
 
