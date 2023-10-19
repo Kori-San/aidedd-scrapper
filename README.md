@@ -16,8 +16,8 @@ $SCRIPT_NAME.$TIMESTAMP.json
 ```
 
 # Makerules
+- help:   	Show all Makerules.
 - clean:  	Clean all the JSON using the `$SCRIPT_NAME.$TIMESTAMP.json` formatting.
-- help:   	Show this help.
 
 # License
 The code is available unde the [MIT](LICENSE) License.
