@@ -148,7 +148,7 @@ for SPELL_URL in "${URL_ARRAY[@]}"; do
         grep -o "<div class=\"description\">.*</div>" | \
         sed "s/<div[^>]*>//g" | \
         sed "s/<\/div>.*//g" | \
-        sed "s/\"/'/g" )
+        sed 's/"/\\"/g')
     filePrintf "\"description\":\"%s\"," "${DESCRIPTION}"
 
     # Get all classes 
