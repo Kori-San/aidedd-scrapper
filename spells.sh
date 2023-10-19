@@ -1,23 +1,26 @@
 #!/bin/bash
 
+### AideDD Endpoint
+ENDPOINT="https://www.aidedd.org/dnd-filters/sorts.php"
+
+### JSON Creation
 # File
 TIMESTAMP="$(date '+%H:%M:%S-%d_%m_%Y')"
 FILENAME="spells.${TIMESTAMP}.json"
 
-# Aidedd Endpoint
-ENDPOINT="https://www.aidedd.org/dnd-filters/sorts.php"
-
-# Function to write on the json filename
+# Function
 function filePrintf() {
     # shellcheck disable=SC2059
     printf "${@}" >> "${FILENAME}"
 }
 
-### Progress function 
+### Script Progress 
+# Variables
 CLOCK=("🕛" "🕐" "🕑" "🕒" "🕓" "🕔" "🕕" "🕖" "🕗" "🕘" "🕙" "🕚")
 CLOCK_LENGHT="${#CLOCK[@]}"
 INDEX="1"
 
+# Function
 function progress() {
     CLOCK_INDEX="$((INDEX%CLOCK_LENGHT))"
     CLOCK_EMOJI="${CLOCK[${CLOCK_INDEX}]}"
@@ -26,10 +29,7 @@ function progress() {
     printf "\r%s %s%% - Progress: %s/%s" "${CLOCK_EMOJI}" "${PERCENTAGE}" "$((INDEX++))" "${1}"
 }
 
-######################
-## Script Beginning ##
-######################
-
+### Script Beginning
 printf "🪛 AideDD Web Scrapper\n"
 printf "📚 Getting Spells at address \"%s\"\n\n" "${ENDPOINT}"
 
