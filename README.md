@@ -9,7 +9,7 @@ $ ./spells.sh
 # ie. Here we run the script to get all the spells
 ```
 
-You will the generate a JSON file with the following naming convention:
+You will generate a JSON file with the following naming convention:
 ```bash
 $SCRIPT_NAME.$TIMESTAMP.json
 # ie. For the `spells.sh` it will be `spells.$TIMESTAMP.json` file
