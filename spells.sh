@@ -157,14 +157,8 @@ for SPELL_URL in "${URL_ARRAY[@]}"; do
     # End object in JSON
     filePrintf "}"
 
-    # Avoid to execute unwanted code if it's the last element
-    if [ "${SPELL_URL}" == "${URL_ARRAY[-1]}" ] ; then
-        printf '\n'
-        break
-    fi
-    
-    # Add ',' in JSON
-    filePrintf ","
+    # Avoid to add breaking ',' to last element 
+    if [ "${SPELL_URL}" != "${URL_ARRAY[-1]}" ] ; then filePrintf ","; else printf '\n'; fi
 done
 
 # End list
