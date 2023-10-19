@@ -33,9 +33,6 @@ function progress() {
 printf "🪛 AideDD Web Scrapper\n"
 printf "📚 Getting Spells at address \"%s\"\n\n" "${ENDPOINT}"
 
-# Init file and erase it's content if it exists
-printf "" > "${FILENAME}"
-
 # Get base DOM from the Endpoint
 INITIAL_TABLE=$(curl "${ENDPOINT}" 2> /dev/null)
 
@@ -56,11 +53,6 @@ filePrintf "["
 for SPELL_URL in "${URL_ARRAY[@]}"; do
     progress "${LENGHT}"
 
-    # Create object on JSON
-    filePrintf "{"
-
-    filePrintf "\"url\":\"%s\"," "${SPELL_URL}"
-
     # Get content of Spell
     CURRENT_SPELL=$(curl "${SPELL_URL}" 2> /dev/null | grep "${SPELL_URL}")
 
@@ -68,7 +60,6 @@ for SPELL_URL in "${URL_ARRAY[@]}"; do
     NAME=$(echo "$CURRENT_SPELL}" | \
         grep -o "<h1>[^<]*</h1>" | \
         sed "s/<[^>]*>//g" )
-    filePrintf "\"name\":\"%s\"," "${NAME}"
 
     # Get Rank
     RANK=$(echo "${CURRENT_SPELL}" | \
@@ -78,62 +69,51 @@ for SPELL_URL in "${URL_ARRAY[@]}"; do
     # Get Level
     LEVEL=$(echo "${RANK}" | \
         grep -o "[0-9]*" )
-    filePrintf "\"level\":%s," "${LEVEL}"
 
     # Get School
     # shellcheck disable=SC2001
     SCHOOL=$(echo "${RANK}" | \
         sed "s/^[^-]*-\s*//g" )
-    filePrintf "\"school\":\"%s\"," "${SCHOOL}"
 
     # Get Cast time 
     CAST_TIME=$(echo "${CURRENT_SPELL}" | \
         grep -o "<div><strong>Temps d'incantation</strong>[^<]*</div>" | \
         sed "s/^[^:]*:\s*//g" | \
         sed "s/<\/div>//g" )
-    filePrintf "\"cast\":\"%s\"," "${CAST_TIME}"
 
     # Get Range
     RANGE=$(echo "${CURRENT_SPELL}" | \
         grep -o "<div><strong>Portée</strong>[^<]*</div>" | \
         sed "s/^[^:]*:\s*//g" | \
         sed "s/<\/div>//g" )
-    filePrintf "\"range\":\"%s\"," "${RANGE}"
 
     # Get Component Object
     COMPONENTS=$(echo "${CURRENT_SPELL}" | \
         grep -o "<div><strong>Composantes</strong>[^<]*</div>" | \
         sed "s/^[^:]*:\s*//g" | \
         sed "s/<\/div>//g" )
-    filePrintf "\"components\":{"
 
     # Get Component V proprety 
     if echo "${COMPONENTS}" | grep -qi "V"; then V_COMP="true"; else V_COMP="false"; fi
-    filePrintf "\"v\":${V_COMP},"
 
     # Get Component S proprety 
     if echo "${COMPONENTS}" | grep -qi "S"; then S_COMP="true"; else S_COMP="false"; fi
-    filePrintf "\"s\":${S_COMP},"
     
     # Get Component M proprety 
-    if echo "${COMPONENTS}" | grep -qi "M"; then M_COMP="true"; else M_COMP="false"; fi
-    filePrintf "\"m\":${M_COMP},"
-
-    # Get Component Other proprety
-    if echo "${COMPONENTS}" | grep -qi "("; then 
+    if echo "${COMPONENTS}" | grep -qi "M"; then
+        M_COMP="true"
         OTHER_COMPONENTS="$(echo "${COMPONENTS}" | sed "s/.*(//g" | sed "s/).*//g")"
+    else
+        M_COMP="false"
+        OTHER_COMPONENTS=""
     fi
-    filePrintf "\"others\":\"%s\"" "${OTHER_COMPONENTS}" 
-
     # End Components Object
-    filePrintf "},"
 
     # Get Duration
     DURATION=$(echo "${CURRENT_SPELL}" | \
         grep -o "<div><strong>Durée</strong>[^<]*</div>" | \
         sed "s/^[^:]*:\s*//g" | \
         sed "s/<\/div>//g" )
-    filePrintf "\"duration\":\"%s\"," "${DURATION}"
 
     # Get description
     DESCRIPTION=$(echo "${CURRENT_SPELL}" | \
@@ -141,24 +121,38 @@ for SPELL_URL in "${URL_ARRAY[@]}"; do
         sed "s/<div[^>]*>//g" | \
         sed "s/<\/div>.*//g" | \
         sed 's/"/\\"/g')
-    filePrintf "\"description\":\"%s\"," "${DESCRIPTION}"
 
     # Get all classes 
-    filePrintf "\"classes\":["
     CLASSES=$(echo "${CURRENT_SPELL}" | \
         grep -zo "<div class='classe'>[^<]*</div>" | \
         sed "s/<div class='classe'>/\"/g" | \
         sed "s/<\/div>/\",/g" | \
         tr -d '\0' | \
         sed "s/,$//g" )
-    filePrintf "${CLASSES}"
-    filePrintf "]"
 
-    # End object in JSON
-    filePrintf "}"
+    # Create JSON
+    filePrintf "{\"url\":\"%s\"," "${SPELL_URL}"
+    filePrintf "\"name\":\"%s\"," "${NAME}"
+    filePrintf "\"level\":%s," "${LEVEL}"
+    filePrintf "\"school\":\"%s\"," "${SCHOOL}"
+    filePrintf "\"cast\":\"%s\"," "${CAST_TIME}"
+    filePrintf "\"range\":\"%s\"," "${RANGE}"
+    filePrintf "\"components\":{"
+    filePrintf "\"v\":%s," "${V_COMP}"
+    filePrintf "\"s\":%s," "${S_COMP}"
+    filePrintf "\"m\":%s," "${M_COMP}"
+    filePrintf "\"others\":\"%s\"}," "${OTHER_COMPONENTS}"
+    filePrintf "\"duration\":\"%s\"," "${DURATION}"
+    filePrintf "\"description\":\"%s\"," "${DESCRIPTION}"
+    filePrintf "\"classes\":[%s]}" "${CLASSES}"
+    # End JSON
 
     # Avoid to add breaking ',' to last element 
-    if [ "${SPELL_URL}" != "${URL_ARRAY[-1]}" ] ; then filePrintf ","; else printf '\n'; fi
+    if [ "${SPELL_URL}" != "${URL_ARRAY[-1]}" ]; then
+        filePrintf ","
+    else
+        printf '\n'
+    fi
 done
 
 # End list
