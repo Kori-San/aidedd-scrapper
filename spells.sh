@@ -150,16 +150,18 @@ for SPELL_URL in "${URL_ARRAY[@]}"; do
     # End object in JSON
     filePrintf "}"
 
-    # Reset print line
-    printf "\r"
-
-    # Add ',' only if not last spell
-    if [ "${SPELL_URL}" != "${URL_ARRAY[-1]}" ] ; then
-        filePrintf ","
+    # Avoid to execute unwanted code if it's the last element
+    if [ "${SPELL_URL}" == "${URL_ARRAY[-1]}" ] ; then
+        printf '\n'
+        break
     fi
+    
+    # Reset print line and add ','
+    printf "\r"
+    filePrintf ","
 done
 
 # End list
 filePrintf "]"
 
-printf "\n\n✨ Done and saved into '%s'.\n" "${FILENAME}"
+printf "\n✨ Done and saved into '%s'.\n" "${FILENAME}"
