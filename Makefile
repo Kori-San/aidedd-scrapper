@@ -5,7 +5,7 @@ help: ## Show this help.
 
 all: help
 
-clean: ## Clean all the JSON using the `$SCRIPT.$TIMESTAMP.json` formatting.
+clean: ## Clean all the JSON using the `$SCRIPT_NAME.$TIMESTAMP.json` formatting.
 	@echo "🧹 Cleaning..."
 	@$(RM) *\.*\:*\:*\-*\_*\_*\.json
 	@echo "✨ Cleaned"
