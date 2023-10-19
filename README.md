@@ -15,7 +15,11 @@ $SCRIPT_NAME.$TIMESTAMP.json
 # ie. For the `spells.sh` it will be `spells.$TIMESTAMP.json` file
 ```
 
-# License 
+# Makerules
+- clean:  	Clean all the JSON using the `$SCRIPT_NAME.$TIMESTAMP.json` formatting.
+- help:   	Show this help.
+
+# License
 The code is available unde the [MIT](LICENSE) License.
 
 #
